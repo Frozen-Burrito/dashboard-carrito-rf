@@ -1,0 +1,20 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">Carro RF</string>
+    <string name="disconnected_hint">Conecta el tablero de instrumentos por bluetooth para observar su estado.</string>
+    <string name="connect_action">Conectar</string>
+    <string name="satellite_count_label">Satélites</string>
+    <string name="speed">Velocidad</string>
+    <string name="home_screen_label">Inicio</string>
+    <string name="connections_screen_label">Conexión</string>
+    <string name="settings_screen_label">Ajustes</string>
+    <string name="bluetooth_disabled_hint">Bluetooth está deshabilitado o no disponible. Habilítalo para encontrar dispositivos.</string>
+    <string name="connectedDeviceHeader">Dispositivo Conectado</string>
+    <string name="disconnect">Desconectar</string>
+    <string name="connect">Conectar</string>
+    <string name="battery_level_label">Batería</string>
+
+    <string name="mapbox_access_token" tools:ignore="Typos">pk.eyJ1Ijoic2VuZG5vb2JzIiwiYSI6ImNrMHEwaThyeTAyMTUzcW8za2EwdGkyNjUifQ.ZJUcR-YnSBGy8PKLFOBBgw</string>
+    <string name="unknown_device">Dispositivo desconocido</string>
+    <string name="search_devices">Buscar dispositivos</string>
+    <string name="available_devices">Dispositivos disponbiles</string>
+</resources>
