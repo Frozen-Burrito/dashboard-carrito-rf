@@ -21,10 +21,12 @@ class HomeViewModel(private val dashboardRepository: DashboardRepository) : View
             when (state) {
                 DashboardState.Disconnected -> HomeScreenState.Disconnected
                 is DashboardState.Loaded -> HomeScreenState.Connected(
+                    state.radioIsConnected,
                     state.gps,
                     state.approximateSpeedMetersPerSecond,
                     state.batterySoC,
-                    state.hoursOfBatteryLeft
+                    state.hoursOfBatteryLeft,
+                    state.imuData
                 )
                 DashboardState.Loading -> HomeScreenState.Loading
             }

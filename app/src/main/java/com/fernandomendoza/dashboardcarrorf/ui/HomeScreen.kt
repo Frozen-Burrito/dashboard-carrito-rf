@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
@@ -31,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -85,95 +87,154 @@ fun ConnectedHomeScreen(
             color = MaterialTheme.colorScheme.surface,
             shape = RectangleShape,
             shadowElevation = 2.dp,
-            modifier = Modifier.fillMaxHeight(0.25f)
+            modifier = Modifier.fillMaxHeight(0.4f)
         ) {
-            Row(
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxSize()
+            Column(
+                modifier = Modifier.fillMaxSize()
             ) {
-                DashboardTile(
-                    label = stringResource(R.string.satellite_count_label),
-                    icon = R.drawable.satellite,
-                    iconColor = MaterialTheme.colorScheme.onSurface
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Row(
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
                 ) {
-                    if (state.gps != null) {
-                        Text(
-                            state.gps.numberOfSatellites.toString(),
-                            style = MaterialTheme.typography.displaySmall
-                        )
-                    } else {
-                        TextPlaceholder()
-                    }
-                }
-
-                DashboardTile(
-                    label = stringResource(R.string.speed),
-                    icon = R.drawable.speed,
-                    iconColor = MaterialTheme.colorScheme.onSurface
-                ) {
-                    if (state.approximateSpeedMetersPerSecond != null && state.approximateSpeedMetersPerSecond < 1000.0) {
-                        Text(
-                            String.format("%.1f RPM", state.approximateSpeedMetersPerSecond),
-                            style = MaterialTheme.typography.displaySmall
-                        )
-                    } else {
-                        TextPlaceholder()
-                    }
-                }
-
-                val batteryIcon = if (state.batterySoC != null) {
-                    if (state.batterySoC > 90) R.drawable.battery_full
-                    else if (state.batterySoC >= 65) R.drawable.battery_075
-                    else if (state.batterySoC >= 35) R.drawable.battery_050
-                    else if (state.batterySoC >= 10) R.drawable.battery_025
-                    else R.drawable.battery_empty
-                } else {
-                    R.drawable.battery_full
-                }
-
-                val batteryColor = if (state.batterySoC != null) {
-                    if (state.batterySoC >= 50) Color.Green
-                    else if (state.batterySoC >= 20) Color.Yellow
-                    else Color.Red
-                } else {
-                    MaterialTheme.colorScheme.onBackground
-                }
-
-                DashboardTile(
-                    label = stringResource(R.string.battery_level_label),
-                    icon = batteryIcon,
-                    iconColor = batteryColor
-                ) {
-                    if (state.batterySoC != null && state.hoursOfBatteryLeft != null) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-//                            modifier = Modifier.fillMaxWidth()
-                        ) {
+                    DashboardTile(
+                        label = stringResource(R.string.satellite_count_label),
+                        icon = R.drawable.satellite,
+                        iconColor = MaterialTheme.colorScheme.onSurface
+                    ) {
+                        if (state.gps != null) {
                             Text(
-                                "${state.batterySoC} %",
+                                state.gps.numberOfSatellites.toString(),
                                 style = MaterialTheme.typography.displaySmall
                             )
-
-                            Spacer(Modifier.height(4.dp))
-
-                            Text(
-                                String.format("%.1f hora${if (state.hoursOfBatteryLeft < 1.0 || state.hoursOfBatteryLeft > 2.0f)"s" else ""}", state.hoursOfBatteryLeft),
-                                style = MaterialTheme.typography.headlineSmall
-                            )
+                        } else {
+                            TextPlaceholder()
                         }
+                    }
+
+                    DashboardTile(
+                        label = stringResource(R.string.speed),
+                        icon = R.drawable.speed,
+                        iconColor = MaterialTheme.colorScheme.onSurface
+                    ) {
+                        if (state.approximateSpeedMetersPerSecond != null && state.approximateSpeedMetersPerSecond < 1000.0) {
+                            Text(
+                                String.format("%.1f RPM", state.approximateSpeedMetersPerSecond),
+                                style = MaterialTheme.typography.displaySmall
+                            )
+                        } else {
+                            TextPlaceholder()
+                        }
+                    }
+
+                    val batteryIcon = if (state.batterySoC != null) {
+                        if (state.batterySoC > 90) R.drawable.battery_full
+                        else if (state.batterySoC >= 65) R.drawable.battery_075
+                        else if (state.batterySoC >= 35) R.drawable.battery_050
+                        else if (state.batterySoC >= 10) R.drawable.battery_025
+                        else R.drawable.battery_empty
                     } else {
-                        TextPlaceholder()
+                        R.drawable.battery_full
+                    }
+
+                    val batteryColor = if (state.batterySoC != null) {
+                        if (state.batterySoC >= 50) Color.Green
+                        else if (state.batterySoC >= 20) Color.Yellow
+                        else Color.Red
+                    } else {
+                        MaterialTheme.colorScheme.onBackground
+                    }
+
+                    DashboardTile(
+                        label = stringResource(R.string.battery_level_label),
+                        icon = batteryIcon,
+                        iconColor = batteryColor
+                    ) {
+                        if (state.batterySoC != null && state.hoursOfBatteryLeft != null) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                            ) {
+                                Text(
+                                    "${state.batterySoC} %",
+                                    style = MaterialTheme.typography.displaySmall
+                                )
+
+                                Spacer(Modifier.height(4.dp))
+
+                                Text(
+                                    String.format("%.1f hora${if (state.hoursOfBatteryLeft < 1.0 || state.hoursOfBatteryLeft > 2.0f)"s" else ""}", state.hoursOfBatteryLeft),
+                                    style = MaterialTheme.typography.headlineSmall
+                                )
+                            }
+                        } else {
+                            TextPlaceholder()
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Row(
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    DashboardTile(
+                        label = stringResource(R.string.acceleration),
+                        icon = null,
+                        labelTextStyle = MaterialTheme.typography.labelMedium
+                    ) {
+                        if (state.imuData != null) {
+                            Text(
+                                String.format("%.1f m/s^2", state.imuData.accelerationMetersPerSecond),
+                                style = MaterialTheme.typography.labelLarge
+                            )
+                        } else {
+                            TextPlaceholder()
+                        }
+                    }
+
+                    DashboardTile(
+                        label = stringResource(R.string.x_axis),
+                        icon = null,
+                        labelTextStyle = MaterialTheme.typography.labelMedium
+                    ) {
+                        if (state.imuData != null) {
+                            Text(
+                                "${state.imuData.pitchDegrees} °",
+                                style = MaterialTheme.typography.labelLarge
+                            )
+                        } else {
+                            TextPlaceholder()
+                        }
+                    }
+
+                    DashboardTile(
+                        label = stringResource(R.string.y_axis),
+                        icon = null,
+                        labelTextStyle = MaterialTheme.typography.labelMedium
+                    ) {
+                        if (state.imuData != null) {
+                            Text(
+                                "${state.imuData.rollDegrees} °",
+                                style = MaterialTheme.typography.labelLarge
+                            )
+                        } else {
+                            TextPlaceholder()
+                        }
                     }
                 }
             }
         }
 
-        if (state.gps != null) {
+        if (state.gps != null && state.gps.coordinateIsInExpectedArea) {
             with(state.gps) {
                 MapBoxMap(
-                    point = Point.fromLngLat( longitudeAsDecimalDegrees, latitudeAsDecimalDegrees),
+                    point = Point.fromLngLat(longitudeAsDecimalDegrees, latitudeAsDecimalDegrees),
                     modifier = Modifier.fillMaxSize()
                 )
             }
@@ -279,8 +340,9 @@ fun DisconnectedHomeScreen(
 @Composable
 fun DashboardTile(
     label: String,
-    @DrawableRes icon: Int,
-    iconColor: Color = MaterialTheme.colorScheme.onSurface,
+    @DrawableRes icon: Int?,
+    iconColor: Color? = MaterialTheme.colorScheme.onSurface,
+    labelTextStyle: TextStyle = MaterialTheme.typography.labelLarge,
     content: @Composable () -> Unit,
 ) {
     Column(
@@ -293,18 +355,20 @@ fun DashboardTile(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(bottom = 8.dp)
         ) {
-            Icon(
-                painter = painterResource(icon),
-                contentDescription = null,
-                tint = iconColor
-            )
+            if (icon != null && iconColor != null) {
+                Icon(
+                    painter = painterResource(icon),
+                    contentDescription = null,
+                    tint = iconColor
+                )
+            }
 
             Spacer(modifier = Modifier.width(4.dp))
 
             Text(
                 label,
                 textAlign = TextAlign.Start,
-                style = MaterialTheme.typography.labelLarge
+                style = labelTextStyle
             )
         }
 

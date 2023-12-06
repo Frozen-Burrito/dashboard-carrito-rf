@@ -17,4 +17,7 @@
     <string name="unknown_device">Dispositivo desconocido</string>
     <string name="search_devices">Buscar dispositivos</string>
     <string name="available_devices">Dispositivos disponbiles</string>
+    <string name="acceleration">Aceleración</string>
+    <string name="x_axis">Eje X</string>
+    <string name="y_axis">Eje Y</string>
 </resources>

@@ -144,32 +144,29 @@ class BluetoothDeviceDataSource(
 
         val inputStream = socket.inputStream
         val inputBuffer = ByteArray(bufferSize)
+        var inputOffset = 0
 
         withContext(Dispatchers.IO) {
             while (true) {
                 val receivedByte = inputStream.read()
 
-                if (BEGIN_OF_PAYLOAD == receivedByte) {
-                    Log.i(TAG, "Received begin of paylaod, attempting to parse.")
+                if (inputOffset >= bufferSize) {
+                    Log.i(TAG, "Reset input buffer offset, buffer = $inputBuffer")
+                    inputOffset = 0
+                } else if (inputOffset > 0 && ((0x0Au).toUByte() == receivedByte.toUByte()) && ((0x0Du).toUByte() == inputBuffer[inputOffset - 1].toUByte())) {
+                    Log.i(TAG, "Received a message with $inputOffset bytes")
 
-                    val payloadLength = inputStream.read()
+                    onResponse(
+                        BluetoothDeviceResult(
+                            inputBuffer.clone().sliceArray(0 until inputOffset),
+                            (inputOffset - 1)
+                        )
+                    )
 
-                    if (payloadLength in VALID_PAYLOAD_LEN_RANGE) {
-                        Log.i(TAG, "Expect payload with $payloadLength bytes")
-
-                        val bytesReadFromPayload = inputStream.read(inputBuffer, 0, payloadLength)
-
-                        if (payloadLength == bytesReadFromPayload) {
-                            Log.i(TAG, "Payload contains $bytesReadFromPayload bytes: $inputBuffer")
-
-                            onResponse(
-                                BluetoothDeviceResult(
-                                    inputBuffer.clone(),
-                                    payloadLength
-                                )
-                            )
-                        }
-                    }
+                    inputOffset = 0
+                }  else {
+                    inputBuffer[inputOffset] = receivedByte.toByte()
+                    inputOffset++
                 }
             }
         }
@@ -204,8 +201,5 @@ class BluetoothDeviceDataSource(
         private val TAG = BluetoothDeviceDataSource::class.simpleName
 
         private val RF_COMM_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
-
-        private val BEGIN_OF_PAYLOAD = 154
-        private val VALID_PAYLOAD_LEN_RANGE = 1..11
     }
 }
